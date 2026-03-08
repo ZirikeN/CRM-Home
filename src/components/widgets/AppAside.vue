@@ -11,7 +11,7 @@
 <script setup>
 import { ref, inject } from 'vue'
 
-import NavAside from '../ui/NavAside.vue';
+import NavAside from '../ui/aside/NavAside.vue';
 
 const isAsideVisible = inject('isAsideVisible')
 const navLinks = ref({

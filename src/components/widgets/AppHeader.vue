@@ -7,7 +7,8 @@
 
 <script setup>
 import { ref, inject } from 'vue';
-import ButtonAside from '../ui/ButtonAside.vue';
+
+import ButtonAside from '../ui/aside/ButtonAside.vue';
 
 const isAsideVisible = inject('isAsideVisible')
 
