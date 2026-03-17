@@ -1,6 +1,7 @@
 <template>
     <div class="field">
-        <span class="p-float-label">
+        <span class="flex flex-col gap-1">
+            <label :for="id">{{ label }}</label>
             <Password
                 :id="id"
                 :value="modelValue"
@@ -17,7 +18,6 @@
                 @input="$emit('update:modelValue', $event)"
                 @blur="$emit('blur')"
             />
-            <label :for="id">{{ label }}</label>
         </span>
         <small v-if="error" class="p-error">{{ error }}</small>
     </div>

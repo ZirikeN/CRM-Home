@@ -1,7 +1,7 @@
 <template>
     <div class="field">
-        <span v-if="label" class="p-float-label" :class="{ 'p-input-icon-right': icon }">
-            <i v-if="icon" :class="icon" />
+        <span v-if="label" class="flex flex-col gap-1">
+            <label :for="id">{{ label }}</label>
             <InputText
                 :id="id"
                 :type="type"
@@ -12,7 +12,6 @@
                 @input="$emit('update:modelValue', $event.target.value)"
                 @blur="$emit('blur')"
             />
-            <label :for="id">{{ label }}</label>
         </span>
         <InputText
             v-else
@@ -41,7 +40,6 @@ defineProps({
     },
     modelValue: [String, Number],
     error: String,
-    icon: String,
 })
 
 defineEmits(['update:modelValue', 'blur'])

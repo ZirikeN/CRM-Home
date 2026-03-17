@@ -1,14 +1,13 @@
 <template>
-    <div class="flex justify-content-center align-items-center min-h-screen">
-        <BaseCard :title="'Вход в систему'" style="width: 400px">
-            <form @submit.prevent="onSubmit">
+    <div class="flex justify-center flex-column items-center min-h-screen">
+        <BaseCard :title="'Вход в систему'" style="width: 700px">
+            <form @submit.prevent="onSubmit" class="flex flex-col gap-2">
                 <BaseInput
                     id="email"
                     label="Email"
                     type="email"
                     v-model="email"
                     :error="errors.email"
-                    icon="pi pi-envelope"
                     @blur="handleBlur('email')"
                 />
 
@@ -20,7 +19,7 @@
                     @blur="handleBlur('password')"
                 />
 
-                <div class="flex justify-content-between align-items-center mb-3">
+                <div class="flex justify-between items-center mb-3">
                     <BaseCheckbox id="remember" label="Запомнить меня" v-model="remember" />
 
                     <BaseButton

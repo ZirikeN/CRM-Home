@@ -1,7 +1,7 @@
 <template>
-    <div class="flex justify-content-center align-items-center min-h-screen">
-        <BaseCard :title="'Регистрация'" style="width: 450px">
-            <form @submit.prevent="onSubmit">
+    <div class="flex justify-center flex-column items-center min-h-screen">
+        <BaseCard :title="'Регистрация'" style="width: 700px">
+            <form @submit.prevent="onSubmit" class="flex flex-col gap-2">
                 <BaseInput
                     id="name"
                     label="Имя"
@@ -51,6 +51,7 @@
                 />
 
                 <BaseButton
+                    class="mt-3"
                     type="submit"
                     label="Зарегистрироваться"
                     variant="primary"

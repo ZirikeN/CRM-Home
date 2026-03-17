@@ -1,11 +1,10 @@
 <template>
     <div class="field">
-        <div class="field-checkbox">
+        <div class="flex items-center gap-0.5">
             <Checkbox
                 :id="id"
                 :binary="true"
                 :modelValue="modelValue"
-                :class="{ 'p-invalid': error }"
                 v-bind="$attrs"
                 @update:modelValue="$emit('update:modelValue', $event)"
             />
