@@ -56,7 +56,7 @@
                     label="Зарегистрироваться"
                     variant="primary"
                     fullWidth
-                    :loading="isSubmitting"
+                    :loading="isSubmitting || loading"
                 />
             </form>
 
@@ -75,6 +75,7 @@ import { useForm, useField } from 'vee-validate'
 import * as yup from 'yup'
 import { useRouter } from 'vue-router'
 import { useToast } from 'primevue/usetoast'
+import { useAuth } from '@/composables/useAuth'
 
 import BaseCard from '@/components/ui/BaseCard.vue'
 import BaseInput from '@/components/ui/BaseInput.vue'
@@ -84,22 +85,19 @@ import BaseButton from '@/components/ui/BaseButton.vue'
 
 const router = useRouter()
 const toast = useToast()
+const { signUp, loading } = useAuth()
 
+// Упростим валидацию для начала
 const validationSchema = yup.object({
-    name: yup
-        .string()
-        .required('Имя обязательно')
-        .min(2, 'Имя должно содержать минимум 2 символа')
-        .max(50, 'Имя слишком длинное'),
+    name: yup.string().required('Имя обязательно'),
     email: yup.string().required('Email обязателен').email('Введите корректный email'),
     password: yup
         .string()
         .required('Пароль обязателен')
-        .min(8, 'Пароль должен содержать минимум 8 символов')
-        .matches(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-            'Пароль должен содержать заглавные, строчные буквы и цифры'
-        ),
+        .min(6, 'Минимум 6 символов')
+        .matches(/[a-z]/, 'Должна быть хотя бы одна строчная буква')
+        .matches(/[A-Z]/, 'Должна быть хотя бы одна заглавная буква')
+        .matches(/[0-9]/, 'Должна быть хотя бы одна цифра'),
     confirmPassword: yup
         .string()
         .required('Подтверждение пароля обязательно')
@@ -107,10 +105,11 @@ const validationSchema = yup.object({
     terms: yup.boolean().oneOf([true], 'Необходимо принять условия'),
 })
 
-const { handleSubmit, isSubmitting, errors, validateField } = useForm({
+const { handleSubmit, errors, validateField } = useForm({
     validationSchema,
 })
 
+// Явно определяем поля и получаем их значения
 const { value: name } = useField('name')
 const { value: email } = useField('email')
 const { value: password } = useField('password')
@@ -123,27 +122,27 @@ const handleBlur = (field) => {
 
 const onSubmit = handleSubmit(async (values) => {
     try {
-        console.log('Registration data:', values)
+        console.log('Form values:', values) // Проверяем, что приходит
 
-        await new Promise((resolve) => setTimeout(resolve, 1000))
+        // Явно передаем примитивные значения
+        await signUp({
+            email: String(values.email).trim(),
+            password: String(values.password),
+            name: String(values.name).trim(),
+        })
 
         toast.add({
             severity: 'success',
             summary: 'Успешно',
-            detail: 'Регистрация завершена',
-            life: 3000,
+            detail: 'Регистрация завершена. Проверьте email для подтверждения.',
+            life: 5000,
         })
 
         setTimeout(() => {
             router.push('/login')
-        }, 2000)
+        }, 3000)
     } catch (error) {
-        toast.add({
-            severity: 'error',
-            summary: 'Ошибка',
-            detail: 'Не удалось зарегистрироваться',
-            life: 3000,
-        })
+        console.error('Registration error:', error)
     }
 })
 

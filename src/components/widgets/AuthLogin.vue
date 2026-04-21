@@ -36,7 +36,7 @@
                     label="Войти"
                     variant="primary"
                     fullWidth
-                    :loading="isSubmitting"
+                    :loading="isSubmitting || loading"
                 />
             </form>
 
@@ -61,6 +61,7 @@ import { useForm, useField } from 'vee-validate'
 import * as yup from 'yup'
 import { useRouter } from 'vue-router'
 import { useToast } from 'primevue/usetoast'
+import { useAuth } from '@/composables/useAuth'
 
 import BaseCard from '@/components/ui/BaseCard.vue'
 import BaseInput from '@/components/ui/BaseInput.vue'
@@ -70,13 +71,11 @@ import BaseButton from '@/components/ui/BaseButton.vue'
 
 const router = useRouter()
 const toast = useToast()
+const { signIn, loading } = useAuth()
 
 const validationSchema = yup.object({
     email: yup.string().required('Email обязателен').email('Введите корректный email'),
-    password: yup
-        .string()
-        .required('Пароль обязателен')
-        .min(6, 'Пароль должен содержать минимум 6 символов'),
+    password: yup.string().required('Пароль обязателен'),
 })
 
 const { handleSubmit, isSubmitting, errors, validateField } = useForm({
@@ -93,27 +92,15 @@ const handleBlur = (field) => {
 
 const onSubmit = handleSubmit(async (values) => {
     try {
-        console.log('Login data:', values)
+        console.log('Login form values:', values)
+        console.log('Password type:', typeof values.password, 'value:', values.password)
 
-        await new Promise((resolve) => setTimeout(resolve, 1000))
-
-        toast.add({
-            severity: 'success',
-            summary: 'Успешно',
-            detail: 'Вход выполнен',
-            life: 3000,
+        await signIn({
+            email: String(values.email).trim(),
+            password: String(values.password), 
         })
-
-        setTimeout(() => {
-            router.push('/')
-        }, 1000)
     } catch (error) {
-        toast.add({
-            severity: 'error',
-            summary: 'Ошибка',
-            detail: 'Неверный email или пароль',
-            life: 3000,
-        })
+        console.error('Login error:', error)
     }
 })
 

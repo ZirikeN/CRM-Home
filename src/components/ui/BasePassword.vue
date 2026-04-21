@@ -4,7 +4,8 @@
             <label :for="id">{{ label }}</label>
             <Password
                 :id="id"
-                :value="modelValue"
+                :modelValue="modelValue"
+                @update:modelValue="updateValue"
                 :class="{ 'p-invalid': error }"
                 class="w-full"
                 :toggleMask="toggleMask"
@@ -15,7 +16,6 @@
                 :strongLabel="strongLabel"
                 inputClass="w-full"
                 v-bind="$attrs"
-                @input="$emit('update:modelValue', $event)"
                 @blur="$emit('blur')"
             />
         </span>
@@ -26,7 +26,7 @@
 <script setup>
 import Password from 'primevue/password'
 
-defineProps({
+const props = defineProps({
     id: String,
     label: String,
     modelValue: String,
@@ -57,7 +57,14 @@ defineProps({
     },
 })
 
-defineEmits(['update:modelValue', 'blur'])
+const emit = defineEmits(['update:modelValue', 'blur'])
+
+// Функция для обработки обновления значения
+const updateValue = (event) => {
+    // PrimeVue Password может передавать событие или строку
+    const value = typeof event === 'object' ? event?.target?.value || '' : event
+    emit('update:modelValue', value)
+}
 </script>
 
 <style scoped>
